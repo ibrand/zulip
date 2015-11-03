@@ -189,7 +189,6 @@ function topic_sidebar_popped() {
 exports.hide_emoji_map_popover = function () {
     if (emoji_map_is_open) {
         $('.emoji_popover').css('display', 'none');
-        // $('.emoji_popover.inner').remove();
         emoji_map_is_open = false;
     }
 };
@@ -247,6 +246,44 @@ exports.register_click_handlers = function () {
         e.stopPropagation();
         show_message_info_popover(this, rows.id(row));
     });
+
+    var isDragging=false;
+    var top_border = $('#floating_recipient_bar').position().top + $('#floating_recipient_bar').height();
+    var total_height;
+    var emoji_popover_height;
+    var emoji_popover_elem;
+    var previous_mouse_position;
+    var compose_box_padding;
+    var emoji_height = 25;
+    $("body").on("mousedown", ".drag", function (e) {
+        // leave a little extra padding for the message box so that it doesn't get too big
+        total_height = $('body > .app').outerHeight() - top_border - 70;
+        isDragging = true;
+        previous_mouse_position = e.pageY;
+        emoji_popover_elem = $(".emoji_popover");
+        emoji_popover_height =  emoji_popover_elem.height();
+        compose_box_padding = $('#compose').height() - emoji_popover_height;
+    });
+
+    $("body").on("mousemove", function (e) {
+        e.preventDefault();
+        if(isDragging) {
+            var new_height = emoji_popover_height + (previous_mouse_position - e.pageY);
+            if (new_height + compose_box_padding > total_height) {
+                emoji_popover_elem.height(total_height - compose_box_padding);
+            } else if (new_height < emoji_height) {
+                emoji_popover_elem.height(emoji_height);
+            } else {
+                emoji_popover_elem.height(new_height);
+            }
+        }
+    });
+
+    $("body").on("mouseup", function (e) {
+        isDragging = false;
+        emoji_popover_height = null;
+    });
+
 
     $("body").on("click", ".emoji_popover", function (e) {
         e.stopPropagation();
