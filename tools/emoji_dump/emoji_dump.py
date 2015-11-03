@@ -8,6 +8,9 @@ import sys
 
 from PIL import Image, ImageDraw, ImageFont
 
+SIZE = (68, 68)
+SPRITE_SIZE = (50, 50)
+
 class MissingGlyphError(Exception):
     pass
 
@@ -15,17 +18,23 @@ class MissingGlyphError(Exception):
 def color_font(name, code_point):
     in_name = 'bitmaps/strike1/uni{}.png'.format(code_point)
     out_name = 'out/unicode/{}.png'.format(code_point)
+    out_sprite_name = 'out/sprite/{}.png'.format(name)
     try:
+        os.path.exists(in_name)
+        
         shutil.copyfile(in_name, out_name)
+        image = Image.new('RGBA', SIZE)
+        image.paste(Image.open(out_name), (0, 2))
+        image.save(out_name, 'PNG')
+        image.resize(SPRITE_SIZE, Image.ANTIALIAS).save(out_sprite_name, 'PNG')
+
     except IOError:
         raise MissingGlyphError('name: %r code_point: %r' % (name, code_point))
-
 
 def bw_font(name, code_point):
     char = unichr(int(code_point, 16))
 
     AA_SCALE = 8
-    SIZE = (68, 68)
     BIG_SIZE = tuple([x * AA_SCALE for x in SIZE])
 
     # AndroidEmoji.ttf is from
@@ -36,6 +45,7 @@ def bw_font(name, code_point):
     draw = ImageDraw.Draw(image)
     draw.text((0, 0), char, font=font, fill='black')
     image.resize(SIZE, Image.ANTIALIAS).save('out/unicode/{}.png'.format(code_point), 'PNG')
+    image.resize(SPRITE_SIZE, Image.ANTIALIAS).save('out/sprite/{}.png'.format(code_point), 'PNG')
 
 
 # ttx is in the fonttools pacakge, the -z option is only on master
@@ -51,6 +61,7 @@ except OSError:
     pass
 
 os.mkdir('out')
+os.mkdir('out/sprite')
 os.mkdir('out/unicode')
 
 emoji_map = json.load(open('emoji_map.json'))
@@ -73,6 +84,7 @@ for name, code_point in emoji_map.items():
             continue
 
     os.symlink('unicode/{}.png'.format(code_point), 'out/{}.png'.format(name))
+subprocess.call('glue out/sprite . --namespace=emoji --sprite-namespace= --retina', shell=True)
 
 if failed:
     print("Errors dumping emoji!")
