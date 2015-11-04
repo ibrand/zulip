@@ -36,6 +36,7 @@ def bw_font(name, code_point):
     draw = ImageDraw.Draw(image)
     draw.text((0, 0), char, font=font, fill='black')
     image.resize(SIZE, Image.ANTIALIAS).save('out/unicode/{}.png'.format(code_point), 'PNG')
+    image.resize(SPRITE_SIZE, Image.ANTIALIAS).save('out/sprite/{}.png'.format(name), 'PNG')
 
 
 # ttx is in the fonttools pacakge, the -z option is only on master
