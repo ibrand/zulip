@@ -3098,6 +3098,7 @@ li.expanded_private_message {
     margin: 2px;
     box-sizing: border-box;
     cursor: pointer;
+    display: inline-block;
 }
 
 .emoji_popover .emoji:active {
