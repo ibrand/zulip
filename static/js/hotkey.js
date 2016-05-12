@@ -184,7 +184,7 @@ function process_hotkey(e) {
     if ($('input:focus,select:focus,textarea:focus,#compose-send-button:focus').length > 0) {
         if (event_name === 'escape') {
             // emoji window should trap escape before it is able to close the compose box
-            if ($('.emoji_popover').css('display') === 'inline-block'){
+            if ($('.emoji_popover').css('display') === 'inline-block') {
                 popovers.hide_emoji_map_popover();
                 return;
             }
@@ -257,7 +257,7 @@ function process_hotkey(e) {
                 narrow.by('is', 'private', opts);
             });
         case 'escape': // Esc: close actions popup, cancel compose, clear a find, or un-narrow
-            if ($('.emoji_popover').css('display') === 'inline-block'){
+            if ($('.emoji_popover').css('display') === 'inline-block') {
                 popovers.hide_emoji_map_popover();
             }
             else if (popovers.any_active()) {

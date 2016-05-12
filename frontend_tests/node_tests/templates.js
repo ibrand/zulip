@@ -70,7 +70,7 @@ function render(template_name, args) {
     html += render('emoji_popover_content', args);
     html += "</div>";
     // test to make sure the first emoji is present in the popover
-    var emoji_key = $(html).find("img#100").attr('title');
+    var emoji_key = $(html).find(".emoji-100").attr('title');
     assert.equal(emoji_key, ':100:');
     global.write_test_output("emoji_popover_content.handlebars", html);
 }());
