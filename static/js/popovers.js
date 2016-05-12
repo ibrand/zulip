@@ -237,6 +237,7 @@ function render_emoji_popover() {
 
     $('.emoji_popover').html(content);
     $('.emoji_popover').css('display', 'inline-block');
+
     $("#new_message_content").focus();
 
     emoji_map_is_open = true;
@@ -298,7 +299,7 @@ exports.register_click_handlers = function () {
         e.stopPropagation();
     });
 
-    $("body").on("click", ".emoji_popover .emoji", function (e) {
+    $(".emoji_popover").on("click", ".emoji", function (e) {
         var emoji_choice = $(e.target).attr("title");
         var textarea = $("#new_message_content");
         textarea.val(textarea.val() + " " + emoji_choice);
