@@ -198,6 +198,7 @@ function topic_sidebar_popped() {
 exports.hide_emoji_map_popover = function () {
     if (emoji_map_is_open) {
         $('.emoji_popover').css('display', 'none');
+        $('.drag').css('display', 'none');
         emoji_map_is_open = false;
     }
 };
@@ -235,7 +236,9 @@ function render_emoji_popover() {
         emoji_list: emoji.emojis_by_name
     });
 
-    $('.emoji_popover').html(content);
+    $('.emoji_popover').append(content);
+
+    $('.drag').show();
     $('.emoji_popover').css('display', 'inline-block');
 
     $("#new_message_content").focus();
@@ -265,6 +268,17 @@ exports.register_click_handlers = function () {
     var previous_mouse_position;
     var compose_box_padding;
     var emoji_height = 25;
+    $("body").on("mouseover", ".emoji_popover", function (e) {
+        total_height = $('body > .app').outerHeight() - top_border - 70;
+        if (total_height <= 300) {
+            // don't allow dragging if the viewport is small enough that it
+            // would obscure everything to drag the emojis
+            $('.drag').hide();
+        } else {
+            $('.drag').show();
+        }
+    });
+
     $("body").on("mousedown", ".drag", function (e) {
         // leave a little extra padding for the message box so that it doesn't get too big
         total_height = $('body > .app').outerHeight() - top_border - 70;
